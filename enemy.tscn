@@ -1,0 +1,77 @@
+[gd_scene load_steps=10 format=3 uid="uid://vcdgfutsrg7o"]
+
+[ext_resource type="Script" path="res://enemy.gd" id="1_7wqed"]
+[ext_resource type="AudioStream" uid="uid://dugunic8nspe5" path="res://Pistol Sound Effect.mp3" id="2_uetvq"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_lsc57"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ciwdg"]
+albedo_color = Color(0.314316, 0.314316, 0.314316, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_dhu68"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_j6ewk"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_b1d3l"]
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_eyiud"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_uqotp"]
+height = 29.959
+radius = 6.5315
+
+[node name="Enemy" type="CharacterBody3D"]
+script = ExtResource("1_7wqed")
+
+[node name="Gun" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.113449, 0, 0, 0, 0.105704, 0, 0, 0, 1, 0.172698, 0.261464, -0.389963)
+mesh = SubResource("BoxMesh_lsc57")
+surface_material_override/0 = SubResource("StandardMaterial3D_ciwdg")
+
+[node name="Muzzle" type="Marker3D" parent="Gun"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.837167)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="Gun"]
+transform = Transform3D(8.81453, 0, 0, 0, 9.46038, 0, 0, 0, 1, 0.0133774, 0.0142164, -0.520063)
+light_color = Color(1, 0, 0, 1)
+spot_range = 44.943
+spot_attenuation = -8.44
+spot_angle = 0.5
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_dhu68")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_j6ewk")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(-1.31134e-08, -0.3, 0, 0.3, -1.31134e-08, 0, 0, 0, 0.3, 0, 0.618852, -0.419974)
+mesh = SubResource("CapsuleMesh_dhu68")
+surface_material_override/0 = SubResource("StandardMaterial3D_b1d3l")
+
+[node name="HitBox" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HitBox"]
+shape = SubResource("CapsuleShape3D_eyiud")
+
+[node name="Area3D" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.624745)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.71534, -14.6967)
+shape = SubResource("CylinderShape3D_uqotp")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("2_uetvq")
+
+[node name="GunTimer" type="Timer" parent="."]
+wait_time = 0.1
+
+[node name="BurstTimer" type="Timer" parent="."]
+autostart = true
+
+[connection signal="area_entered" from="HitBox" to="." method="_on_hit_box_area_entered"]
+[connection signal="area_entered" from="Area3D" to="." method="_on_area_3d_area_entered"]
+[connection signal="timeout" from="GunTimer" to="." method="_on_gun_timer_timeout"]
+[connection signal="timeout" from="BurstTimer" to="." method="_on_burst_timer_timeout"]

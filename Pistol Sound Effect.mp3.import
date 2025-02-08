@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dugunic8nspe5"
+path="res://.godot/imported/Pistol Sound Effect.mp3-9ba2cc5fc0927b45dd648b091b81304f.mp3str"
+
+[deps]
+
+source_file="res://Pistol Sound Effect.mp3"
+dest_files=["res://.godot/imported/Pistol Sound Effect.mp3-9ba2cc5fc0927b45dd648b091b81304f.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,113 @@
+[gd_scene load_steps=9 format=3 uid="uid://bvduqmwk40dao"]
+
+[sub_resource type="GDScript" id="GDScript_dacpr"]
+script/source = "extends RigidBody3D
+
+@onready var collision_ray := ($Gunshot as RayCast3D)
+@export var bullet_velocity = 100
+
+func _ready() -> void:
+	print(transform.basis)
+	linear_velocity = -transform.basis.z * bullet_velocity
+
+func _physics_process(delta: float) -> void:
+	if collision_ray.is_colliding():
+		print(\"fafa\")
+		var bullet = preload(\"res://gunshot.tscn\")
+		bullet = bullet.instantiate()
+		bullet.position = global_position
+		get_parent().add_child(bullet)
+	bullet_velocity -= 0.5
+	rotation.x -= 0.0001
+
+
+func _on_timer_timeout() -> void:
+	queue_free()
+
+
+
+
+func _on_removal_area_body_entered(body: Node3D) -> void:
+	print(body)
+	queue_free()
+"
+
+[sub_resource type="BoxMesh" id="BoxMesh_uyw4f"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eea85"]
+albedo_color = Color(1, 1, 0, 1)
+emission_enabled = true
+emission = Color(1, 1, 0, 1)
+emission_energy_multiplier = 1.36
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_yprsk"]
+spread = 48.293
+initial_velocity_min = 144.16
+initial_velocity_max = 144.46
+gravity = Vector3(0, 0, 0)
+turbulence_noise_strength = 20.0
+turbulence_noise_scale = 10.0
+turbulence_noise_speed = Vector3(0.37, 0.92, 0.705)
+turbulence_noise_speed_random = 4.0
+turbulence_influence_min = 1.0
+turbulence_influence_max = 1.0
+turbulence_initial_displacement_min = -0.499999
+turbulence_initial_displacement_max = 1.49012e-06
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3gnv3"]
+albedo_color = Color(1, 0.529412, 0, 1)
+emission_enabled = true
+emission = Color(1, 0.458824, 0, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_wgr6l"]
+material = SubResource("StandardMaterial3D_3gnv3")
+radius = 0.05
+height = 0.1
+radial_segments = 4
+rings = 0
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5larj"]
+radius = 0.16702
+height = 1.50475
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qq4q1"]
+size = Vector3(0.06073, 0.0565948, 0.905273)
+
+[node name="Bullet" type="RigidBody3D"]
+script = SubResource("GDScript_dacpr")
+
+[node name="Gunshot" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -0.0126708, -0.99992, 0, 0.99992, -0.0126708, 0, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.025, 0, 0, 0, 0.025, 0, 0, 0, 0.1, 0, 0, 0)
+mesh = SubResource("BoxMesh_uyw4f")
+surface_material_override/0 = SubResource("StandardMaterial3D_eea85")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="MeshInstance3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, -0.121633)
+lifetime = 0.1
+trail_enabled = true
+trail_lifetime = 0.05
+process_material = SubResource("ParticleProcessMaterial_yprsk")
+draw_pass_1 = SubResource("CapsuleMesh_wgr6l")
+
+[node name="DamageArea" type="Area3D" parent="." groups=["Bullet"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.00153)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DamageArea"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0.552501)
+shape = SubResource("CapsuleShape3D_5larj")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 10.0
+
+[node name="RemovalArea" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.329937)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RemovalArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00491333, 0.0147324, 0.0473633)
+shape = SubResource("BoxShape3D_qq4q1")
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="body_entered" from="RemovalArea" to="." method="_on_removal_area_body_entered"]

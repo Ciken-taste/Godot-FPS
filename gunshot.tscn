@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://bfqyij7ujktur"]
+
+[ext_resource type="Texture2D" uid="uid://d23e3k7gj1vii" path="res://gunhole.png" id="1_h21sb"]
+
+[node name="Gunshot" type="Node3D"]
+
+[node name="Decal" type="Decal" parent="."]
+size = Vector3(0.2, 0.2, 0.2)
+texture_albedo = ExtResource("1_h21sb")
