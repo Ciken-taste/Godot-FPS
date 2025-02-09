@@ -4,15 +4,13 @@
 script/source = "extends RigidBody3D
 
 @onready var collision_ray := ($Gunshot as RayCast3D)
-@export var bullet_velocity = 100
+@export var bullet_velocity = 75
 
 func _ready() -> void:
-	print(transform.basis)
 	linear_velocity = -transform.basis.z * bullet_velocity
 
 func _physics_process(delta: float) -> void:
 	if collision_ray.is_colliding():
-		print(\"fafa\")
 		var bullet = preload(\"res://gunshot.tscn\")
 		bullet = bullet.instantiate()
 		bullet.position = global_position
@@ -28,7 +26,7 @@ func _on_timer_timeout() -> void:
 
 
 func _on_removal_area_body_entered(body: Node3D) -> void:
-	print(body)
+	
 	queue_free()
 "
 

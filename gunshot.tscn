@@ -5,5 +5,6 @@
 [node name="Gunshot" type="Node3D"]
 
 [node name="Decal" type="Decal" parent="."]
-size = Vector3(0.2, 0.2, 0.2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.159412, 0, 0)
+size = Vector3(1, 1, 1)
 texture_albedo = ExtResource("1_h21sb")

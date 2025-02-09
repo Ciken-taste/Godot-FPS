@@ -22,6 +22,7 @@ height = 29.959
 radius = 6.5315
 
 [node name="Enemy" type="CharacterBody3D"]
+collision_layer = 2
 script = ExtResource("1_7wqed")
 
 [node name="Gun" type="MeshInstance3D" parent="."]
@@ -38,6 +39,13 @@ light_color = Color(1, 0, 0, 1)
 spot_range = 44.943
 spot_attenuation = -8.44
 spot_angle = 0.5
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.727639, 0)
+target_position = Vector3(0, 0.145, 0)
+collision_mask = 8
+debug_shape_custom_color = Color(0.923985, 0.143474, 0.371613, 1)
+debug_shape_thickness = 5
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("CapsuleMesh_dhu68")

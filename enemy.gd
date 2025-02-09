@@ -19,6 +19,8 @@ var firing : bool = false
 @onready var gun := ($Gun as MeshInstance3D)
 @onready var gun_muzzle := ($Gun/Muzzle as Marker3D)
 
+@onready var player_visible_ray := ($RayCast3D as RayCast3D)
+
 func approaching_player():
 	global_position -= transform.basis.z * SPEED
 	if global_position.distance_to(PlayerVars.current_pos) < 20:
@@ -65,12 +67,18 @@ func _physics_process(delta: float) -> void:
 	if not is_player_spotted:
 		patrol()
 	else:
+		player_visible_ray.target_position = to_local(PlayerVars.current_pos)
+		print(player_visible_ray.target_position)
+		if player_visible_ray.is_colliding():
+			print(player_visible_ray.get_collider())
+			print("i cant see him")
+			closing_in = true
 		look_at(PlayerVars.current_pos)
 		if global_position.distance_to(PlayerVars.current_pos) >= 50:
 			closing_in = true
 			
 		if not closing_in:
-			gun.rotation.x = clamp(rotation.x + global_position.distance_to(PlayerVars.current_pos) * 0.0005, -PI/4, PI/3)
+			gun.rotation.x = clamp(rotation.x + global_position.distance_to(PlayerVars.current_pos) * 0.00075, -PI/4, PI/3)
 			rotation.x = 0
 			shoot()
 		else:

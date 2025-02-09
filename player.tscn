@@ -26,6 +26,7 @@ func _input(event: InputEvent) -> void:
 albedo_color = Color(0.314316, 0.314316, 0.314316, 1)
 
 [node name="Player" type="CharacterBody3D"]
+collision_layer = 2
 script = ExtResource("1_n1ysu")
 
 [node name="Area3D" type="Area3D" parent="." groups=["Player"]]
