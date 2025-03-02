@@ -1,8 +1,9 @@
-[gd_scene load_steps=12 format=3 uid="uid://bllukecb3hngg"]
+[gd_scene load_steps=13 format=3 uid="uid://bllukecb3hngg"]
 
 [ext_resource type="Texture2D" uid="uid://b8gph1epjearp" path="res://icon.svg" id="1_wcubm"]
 [ext_resource type="PackedScene" uid="uid://n0sojk6eoh8q" path="res://player.tscn" id="2_kxhrb"]
 [ext_resource type="PackedScene" uid="uid://vcdgfutsrg7o" path="res://enemy.tscn" id="3_tland"]
+[ext_resource type="PackedScene" uid="uid://cyrjwfjy0ctp4" path="res://door.tscn" id="4_x7i1w"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_678g3"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -88,3 +89,6 @@ transform = Transform3D(-0.0960369, 0, 0.995378, 0, 1, 0, -0.995378, 0, -0.09603
 
 [node name="Enemy8" parent="." instance=ExtResource("3_tland")]
 transform = Transform3D(-0.0960369, 0, 0.995378, 0, 1, 0, -0.995378, 0, -0.0960369, -53.2932, 17.2199, -30.3754)
+
+[node name="Door" parent="." instance=ExtResource("4_x7i1w")]
+transform = Transform3D(1.25, 0, 0, 0, 1.25, 0, 0, 0, 1.25, 5.16814, 0.5, -1.27613)

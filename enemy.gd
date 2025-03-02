@@ -78,7 +78,7 @@ func _physics_process(delta: float) -> void:
 			closing_in = true
 			
 		if not closing_in:
-			gun.rotation.x = clamp(rotation.x + global_position.distance_to(PlayerVars.current_pos) * 0.00075, -PI/4, PI/3)
+			gun.rotation.x = clamp(rotation.x + global_position.distance_to(PlayerVars.current_pos) * 0.00175, -PI/4, PI/3)
 			rotation.x = 0
 			shoot()
 		else:

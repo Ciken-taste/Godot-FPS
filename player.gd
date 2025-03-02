@@ -14,6 +14,8 @@ var ready_to_fire : bool = true
 @onready var gunshot_audio := ($Gunshot as AudioStreamPlayer)
 @onready var health_bar := ($HUD/HealthBar as ProgressBar)
 
+@onready var interaction_label := ($HUD/InteractionLabel as Label)
+
 func shoot() -> void:
 	if ready_to_fire:
 		gunshot_audio.play(1.3)
@@ -78,3 +80,12 @@ func _on_area_3d_area_entered(area: Area3D) -> void:
 	if area.is_in_group("Bullet"):
 		PlayerVars.health -= 10
 		health_bar.value = PlayerVars.health
+
+
+func _on_interaction_zone_area_entered(area: Area3D) -> void:
+	if area.is_in_group("Door"):
+		interaction_label.show()
+
+func _on_interaction_zone_area_exited(area: Area3D) -> void:
+	if area.is_in_group("Door"):
+		interaction_label.hide()

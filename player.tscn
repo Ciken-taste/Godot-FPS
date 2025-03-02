@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://n0sojk6eoh8q"]
+[gd_scene load_steps=10 format=3 uid="uid://n0sojk6eoh8q"]
 
 [ext_resource type="Script" path="res://player.gd" id="1_n1ysu"]
 [ext_resource type="AudioStream" uid="uid://dugunic8nspe5" path="res://Pistol Sound Effect.mp3" id="2_a1sps"]
@@ -24,6 +24,8 @@ func _input(event: InputEvent) -> void:
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wxend"]
 albedo_color = Color(0.314316, 0.314316, 0.314316, 1)
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_qjy27"]
 
 [node name="Player" type="CharacterBody3D"]
 collision_layer = 2
@@ -59,6 +61,13 @@ spot_range = 44.943
 spot_attenuation = -8.44
 spot_angle = 0.5
 
+[node name="InteractionZone" type="Area3D" parent="Camera3D" groups=["InteractionZone"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011211, -0.724772, 0.00525212)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Camera3D/InteractionZone"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.5, -1)
+shape = SubResource("CylinderShape3D_qjy27")
+
 [node name="HUD" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 15
@@ -93,6 +102,19 @@ step = 1.0
 value = 100.0
 metadata/_edit_use_anchors_ = true
 
+[node name="InteractionLabel" type="Label" parent="HUD"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.439236
+anchor_top = 0.964506
+anchor_right = 0.560764
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Press F to interact"
+metadata/_edit_use_anchors_ = true
+
 [node name="GunTimer" type="Timer" parent="."]
 wait_time = 0.1
 
@@ -100,4 +122,6 @@ wait_time = 0.1
 stream = ExtResource("2_a1sps")
 
 [connection signal="area_entered" from="Area3D" to="." method="_on_area_3d_area_entered"]
+[connection signal="area_entered" from="Camera3D/InteractionZone" to="." method="_on_interaction_zone_area_entered"]
+[connection signal="area_exited" from="Camera3D/InteractionZone" to="." method="_on_interaction_zone_area_exited"]
 [connection signal="timeout" from="GunTimer" to="." method="_on_gun_timer_timeout"]

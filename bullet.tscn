@@ -1,32 +1,36 @@
-[gd_scene load_steps=9 format=3 uid="uid://bvduqmwk40dao"]
+[gd_scene load_steps=8 format=3 uid="uid://bvduqmwk40dao"]
 
 [sub_resource type="GDScript" id="GDScript_dacpr"]
 script/source = "extends RigidBody3D
 
-@onready var collision_ray := ($Gunshot as RayCast3D)
-@export var bullet_velocity = 75
+@export var bullet_velocity = 60
+@onready var queue_timer := ($QueueTimer as Timer)
+const DRAG : float = 0.99
 
 func _ready() -> void:
-	linear_velocity = -transform.basis.z * bullet_velocity
+	rotation.y += randf_range(-0.025, 0.025)
+	rotation.x += randf_range(-0.025, 0.025)
+	linear_velocity = -transform.basis.z * bullet_velocity 
+
 
 func _physics_process(delta: float) -> void:
-	if collision_ray.is_colliding():
-		var bullet = preload(\"res://gunshot.tscn\")
-		bullet = bullet.instantiate()
-		bullet.position = global_position
-		get_parent().add_child(bullet)
-	bullet_velocity -= 0.5
-	rotation.x -= 0.0001
+	linear_velocity *= Vector3(DRAG, DRAG, DRAG)
+	if rotation.x > -PI/2: rotation.x -= 0.0001
+	
 
 
 func _on_timer_timeout() -> void:
 	queue_free()
 
-
-
-
 func _on_removal_area_body_entered(body: Node3D) -> void:
+	var bullet = preload(\"res://gunshot.tscn\")
+	bullet = bullet.instantiate()
+	bullet.position = global_position
+	get_parent().add_child(bullet)
+	queue_timer.start()
 	
+
+func _on_queue_timer_timeout() -> void:
 	queue_free()
 "
 
@@ -64,18 +68,15 @@ height = 0.1
 radial_segments = 4
 rings = 0
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5larj"]
-radius = 0.16702
-height = 1.50475
-
 [sub_resource type="BoxShape3D" id="BoxShape3D_qq4q1"]
-size = Vector3(0.06073, 0.0565948, 0.905273)
+size = Vector3(0.146235, 0.144281, 1.11475)
 
 [node name="Bullet" type="RigidBody3D"]
 script = SubResource("GDScript_dacpr")
 
-[node name="Gunshot" type="RayCast3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -0.0126708, -0.99992, 0, 0.99992, -0.0126708, 0, 0, 0)
+[node name="QueueTimer" type="Timer" parent="."]
+wait_time = 0.05
+one_shot = true
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.025, 0, 0, 0, 0.025, 0, 0, 0, 0.1, 0, 0, 0)
@@ -90,22 +91,16 @@ trail_lifetime = 0.05
 process_material = SubResource("ParticleProcessMaterial_yprsk")
 draw_pass_1 = SubResource("CapsuleMesh_wgr6l")
 
-[node name="DamageArea" type="Area3D" parent="." groups=["Bullet"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.00153)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="DamageArea"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0.552501)
-shape = SubResource("CapsuleShape3D_5larj")
-
 [node name="Timer" type="Timer" parent="."]
 wait_time = 10.0
 
-[node name="RemovalArea" type="Area3D" parent="."]
+[node name="RemovalArea" type="Area3D" parent="." groups=["Bullet"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.329937)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RemovalArea"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00491333, 0.0147324, 0.0473633)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00439119, 0.00704483, -0.0573731)
 shape = SubResource("BoxShape3D_qq4q1")
 
+[connection signal="timeout" from="QueueTimer" to="." method="_on_queue_timer_timeout"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
 [connection signal="body_entered" from="RemovalArea" to="." method="_on_removal_area_body_entered"]
